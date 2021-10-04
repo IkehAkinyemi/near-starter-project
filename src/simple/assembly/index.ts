@@ -1,11 +1,5 @@
 import { storage, Context, logging } from "near-sdk-as";
-
-interface Candy {
-  name: string;
-  supply: i64;
-  uniqueID: i64;
-  supplier: string;
-}
+import { Candy } from "./model";
 
 // Initializes the storage with two arrays namely shop and suppliers.
 export function initializeCandyShop(): string {
@@ -24,14 +18,27 @@ function updateSuppliers(supplier: string): void {
 }
 
 // This updates the shop with the current supply of candy.
-export function updateCandyShop(supply: Candy): string {
+export function updateCandyShop(
+  name: string,
+  supply: i64,
+  uniqueID: i64,
+  supplier: string
+): string {
+  const candy: Candy = {
+    name,
+    supply,
+    uniqueID,
+    supplier,
+  };
+
   if (storage.get("shop") === null) {
     return "The shop is down";
   }
-  storage.get<Candy[]>("shop")!.push(supply);
-  updateSuppliers(supply.supplier);
 
-  return `✅ Updated the shop with ${supply.name}`;
+  storage.get<Candy[]>("shop")!.push(candy);
+  updateSuppliers(supplier);
+
+  return `✅ Updated the shop with ${name}`;
 }
 
 // Logs to the console, the current status of the shop and its suppliers.
@@ -44,12 +51,9 @@ export function candyShopStatus(): void {
     logging.log(candy.name);
   });
 
-  len = storage.get<string[]>("suppliers")!.length
-  logging.log(
-    `There are ${len} for the shop, they are listed below:`
-  );
+  len = storage.get<string[]>("suppliers")!.length;
+  logging.log(`There are ${len} for the shop, they are listed below:`);
   storage.get<string[]>("suppliers")!.forEach((supplier) => {
     logging.log(supplier);
   });
 }
-

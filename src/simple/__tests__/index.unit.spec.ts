@@ -8,7 +8,7 @@ describe("Contract", () => {
   })
 
   it("Updates the shop with the current supply of candy.", () => {
-    expect(contract.updateCandyShop({name:"Milkyway", supply: 234, uniqueID: 91302, supplier: "Sherif"})).toStrictEqual("✅ Updated the shop with Milkyway")
+    expect(contract.updateCandyShop("Milkyway",  234, 91302, "Sherif")).toStrictEqual("✅ Updated the shop with Milkyway")
   })
 
   // CHANGE method tests
